@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Image Analysis</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f7;
+        margin: 0;
+        padding: 40px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        color: #c0392b;
+      }
+      form {
+        margin: 20px 0;
+        padding: 20px;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        text-align: center;
+      }
+      input[type="file"] {
+        margin-bottom: 15px;
+      }
+      input[type="text"] {
+        width: 80%;
+        padding: 8px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+      .divider {
+        color: #999;
+        margin: 10px 0;
+        font-size: 13px;
+      }
+      button {
+        background: #c0392b;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+      }
+      button:hover {
+        background: #a93226;
+      }
+      .error {
+        color: #c0392b;
+        font-weight: bold;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee;
+      }
+      th {
+        background: #fafafa;
+      }
+      img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-top: 15px;
+      }
+      .top-result {
+        background: #fdf2f0;
+        border-left: 4px solid #c0392b;
+        padding: 12px 16px;
+        margin-top: 15px;
+        border-radius: 6px;
+        font-size: 18px;
+      }
+      .bar-bg {
+        background: #eee;
+        border-radius: 4px;
+        height: 14px;
+        width: 100%;
+      }
+      .bar-fill {
+        background: #c0392b;
+        height: 14px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>AI Image Analysis</h1>
+      <p>
+        Upload an image, or paste an image URL, and the AI (CLIP) will identify
+        what it is.
+      </p>
+
+      <form action="/analyze" method="post" enctype="multipart/form-data">
+        <input
+          type="text"
+          name="image_url"
+          placeholder="Paste an image URL here (https://...)"
+        />
+        <div class="divider">— or —</div>
+        <input type="file" name="image" accept="image/*" />
+        <br />
+        <button type="submit">Analyze Image</button>
+      </form>
+
+      {% if error %}
+      <p class="error">{{ error }}</p>
+      {% endif %} {% if results %}
+      <h2>Results</h2>
+
+      <div class="top-result">
+        Best match: <strong>{{ results.top_label }}</strong>
+        ({{ "%.1f"|format(results.top_confidence) }}%)
+      </div>
+
+      <h3>Top Matches</h3>
+      <table>
+        <tr>
+          <th>Label</th>
+          <th>Confidence</th>
+          <th></th>
+        </tr>
+        {% for label, conf in results.matches %}
+        <tr>
+          <td>{{ label }}</td>
+          <td>{{ "%.1f"|format(conf) }}%</td>
+          <td style="width: 200px">
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:{{ conf }}%;"></div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <h3>Analyzed Image</h3>
+      <img src="{{ results.input_image }}" />
+      {% endif %}
+    </div>
+  </body>
+</html>
