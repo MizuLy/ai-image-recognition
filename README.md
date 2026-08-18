@@ -26,7 +26,7 @@ pip install git+https://github.com/openai/CLIP.git --break-system-packages
 
 ## Folder structure
 ```
-task1_web/
+ai-image-recognition/
 ├── app.py
 ├── README.md
 ├── templates/
@@ -37,7 +37,7 @@ task1_web/
 
 ## Run it
 ```bash
-python3 app.py
+python app.py
 ```
 Then open **http://127.0.0.1:8000** in your browser.
 
